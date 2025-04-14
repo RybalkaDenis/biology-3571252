@@ -20,6 +20,21 @@ identify pairwise differences between pollutant concentrations, G. steini abunda
 changes in T. molitor body mass. We considered differences statistically significant at P
 &lt; 0.05.
 
+### Results
+
+![Body mass example. Figure 1](BodyMass.png)
+Figure 1. Correlation between T. molitor body weight and aniline concentration: black horizontal
+line – median, blue diamond – mean, lower and upper boundaries of the rectangle – I and III
+quartiles, the black vertical line above the box represents the range from the third quartile to the
+maximum value, and the black vertical line below the box represents the range from the first
+quartile to the minimum value, the dots represent individual T. molitor specimens, different letters
+above the boxes indicate statistically significant differences (P &lt; 0.05) between populations
+according to Tukey’s HSD test, the numbers next to the blue line indicate the mean value.
+
+![Gregarina count example. Figure 2](Gregarine.png)
+Figure 2. Relationship between body weight of T. molitor and formaldehyde concentration: see
+Fig. 1.
+
 #### Keywords:
 
 Tenebrio molitor; Gregarina steini; parasitic systems; xylene; formaldehyde; aniline.
