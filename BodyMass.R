@@ -3,12 +3,13 @@ install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("multcompView")
 install.packages("rstudioapi")
+install.packages("ggtext")
 
 # Load libraries
 library(dplyr)
 library(ggplot2)
 library(multcompView)
-library(readxl)
+library(ggtext)
 
 # Setting working directory to current
 current_path = rstudioapi::getActiveDocumentContext()$path 
@@ -76,7 +77,7 @@ groupCounts <- compoundData %>%
   summarise(N = n())
 
 updatedYLabels <- groupCounts %>%
-  mutate(label = paste0(Concentration, "\n(N=", N, ")"))
+  mutate(label = paste0(Concentration, "<br>(<i>N</i> = ", N, ")"))
 
 # Prepare annotation data
 annotation_data <- data.frame(
@@ -100,9 +101,9 @@ ggplot(compoundData, aes(x = Concentration, y = Change)) +
   ) +
   stat_summary(fun = mean, 
                geom = "text", 
-               aes(label = round(..y.., 2)), 
+               aes(label = gsub("-", "\u2212", format(round(..y.., 2), nsmall = 2))),
                hjust = -1, 
-               color = "blue"
+               color = "blue",
   ) +  # Mean labels
   geom_jitter(
     aes(color = Concentration), width = 0.2, size = 2, alpha = 0.6
@@ -111,6 +112,7 @@ ggplot(compoundData, aes(x = Concentration, y = Change)) +
     breaks = seq(floor(min(compoundData$Change)), ceiling(max(compoundData$Change)), by = 1),
     limits = c(min(as.numeric(as.character(compoundData$Change)) - 0.5), 
                max(as.numeric(as.character(compoundData$Change))) + 0.5),
+    labels = ~sub("-", "\u2212", .x),
   ) +  # Set y-axis scale to increment by 1
   geom_text(
     data = annotation_data,
@@ -126,8 +128,8 @@ ggplot(compoundData, aes(x = Concentration, y = Change)) +
   theme_minimal() +
   theme(legend.position = "none") +
   theme(
-    axis.text.x = element_text(size = 10, hjust = 0.5),
-    axis.text.y = element_text(size = 10, hjust = 0.5),
+    axis.text.x = element_markdown(size = 10, hjust = 0.5),
+    axis.text.y = element_markdown(size = 10, hjust = 0.5),
     axis.title = element_text(size = 12, face = "bold"),
     plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
     legend.position = "none"

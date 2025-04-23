@@ -3,13 +3,14 @@ install.packages("dplyr")
 install.packages("ggplot2")
 install.packages("multcompView")
 install.packages("rstudioapi")
+install.packages("ggtext")
 
 # Load libraries
 library(dplyr)
 library(ggplot2)
 library(multcompView)
 library(rstudioapi)
-
+library(ggtext)
 # Setting working directory to current
 current_path = rstudioapi::getActiveDocumentContext()$path 
 setwd(dirname(current_path ))
@@ -51,7 +52,8 @@ if (language == "en") {
 compoundData <- rawData %>% filter(Compound %in% c(compound, "Control"))
 colnames(compoundData) <- c("Compound", "Concentration", "StartWeight", "EndWeight", "GregarinaCount", "Change", "ChangePercent")
 compoundData <- compoundData %>% filter(!is.na(GregarinaCount))
-compoundData$Concentration <- factor(compoundData$Concentration, ordered = T)
+compoundData$Concentration <- factor(compoundData$Concentration)
+compoundData$GregarinaCount <- as.numeric(compoundData$GregarinaCount)
 
 # Experiment lasted for 10 days
 compoundData$Change <- as.numeric(compoundData$Change) / 10
@@ -59,10 +61,10 @@ compoundData$Change <- as.numeric(compoundData$Change) / 10
 # We need max values to get correct scales points
 maxValues <- compoundData %>%
   group_by(Concentration) %>%
-  summarise(maxChange = ceiling(max(Change)))
+  summarise(maxGregarinaCount = ceiling(max(GregarinaCount)))
 
 # Perform ANOVA
-anovaResult <- aov(Change ~ Concentration, data = compoundData)
+anovaResult <- aov(GregarinaCount ~ Concentration, data = compoundData)
 summary(anovaResult)
 
 # Tukey's HSD Test for pairwise comparisons
@@ -76,7 +78,7 @@ groupCounts <- compoundData %>%
   summarise(N = n())
 
 updatedYLabels <- groupCounts %>%
-  mutate(label = paste0(Concentration, "\n(N=", N, ")"))
+  mutate(label = paste0(Concentration, "<br>(<i>N</i> = ", N, ")"))
 
 # Prepare annotation data
 annotation_data <- data.frame(
@@ -88,7 +90,7 @@ annotation_data <- annotation_data %>%
   left_join(maxValues, by = "Concentration")
 
 # Create the boxplot with annotations
-ggplot(compoundData, aes(x = Concentration, y = Change)) +
+ggplot(compoundData, aes(x = Concentration, y = GregarinaCount)) +
   geom_boxplot(width = 0.2, outlier.shape = 8, outlier.color = "red", outlier.size = 2) +
   stat_summary(
     fun = mean, geom = "point", shape = 23, size = 3, fill = "blue", color = "black"
@@ -100,7 +102,7 @@ ggplot(compoundData, aes(x = Concentration, y = Change)) +
   ) +
   stat_summary(fun = mean, 
                geom = "text", 
-               aes(label = round(..y.., 2)), 
+               aes(label = gsub("-", "\u2212", format(round(..y.., 2), nsmall = 2))),
                hjust = -1, 
                color = "blue"
   ) +  # Mean labels
@@ -108,13 +110,13 @@ ggplot(compoundData, aes(x = Concentration, y = Change)) +
     aes(color = Concentration), width = 0.2, size = 2, alpha = 0.6
   ) +  # Add jittered points
   scale_y_continuous(
-    breaks = seq(floor(min(compoundData$Change)), ceiling(max(compoundData$Change)), by = 1),
-    limits = c(min(as.numeric(as.character(compoundData$Change)) - 0.5), 
-               max(as.numeric(as.character(compoundData$Change))) + 0.5),
+    breaks = seq(floor(min(compoundData$GregarinaCount)), ceiling(max(compoundData$GregarinaCount)), by = 5),
+    limits = c(min(as.numeric(as.character(compoundData$GregarinaCount)) - 2), 
+               max(as.numeric(as.character(compoundData$GregarinaCount))) + 2),
   ) +  # Set y-axis scale to increment by 1
   geom_text(
     data = annotation_data,
-    aes(x = Concentration, y = maxChange + 0.2, label = label),
+    aes(x = Concentration, y = maxGregarinaCount + 2, label = label),
     inherit.aes = FALSE,
     size = 3.5
   ) +
@@ -123,12 +125,12 @@ ggplot(compoundData, aes(x = Concentration, y = Change)) +
     x = labelX,
     y = labelY,
   ) +
-  theme_minimal() +
-  theme(legend.position = "none") +
+  theme_classic() +
   theme(
-    axis.text.x = element_text(size = 10, hjust = 0.5),
-    axis.text.y = element_text(size = 10, hjust = 0.5),
+    axis.text.x = element_markdown(size = 10, hjust = 0.5),
+    axis.text.y = element_markdown(size = 10, hjust = 0.5),
     axis.title = element_text(size = 12, face = "bold"),
     plot.title = element_text(size = 10, face = "bold", hjust = 0.5),
     legend.position = "none"
   )
+
