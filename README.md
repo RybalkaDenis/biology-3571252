@@ -23,17 +23,19 @@ changes in T. molitor body mass. We considered differences statistically signifi
 ### Results
 
 ![Body mass example. Figure 1](BodyMass.png)
-Figure 1. Correlation between T. molitor body weight and aniline concentration: black horizontal
+Figure 1. Correlation between T. molitor body weight and o-xylene concentration: black horizontal
 line – median, blue diamond – mean, lower and upper boundaries of the rectangle – I and III
 quartiles, the black vertical line above the box represents the range from the third quartile to the
 maximum value, and the black vertical line below the box represents the range from the first
-quartile to the minimum value, the dots represent individual T. molitor specimens, different letters
-above the boxes indicate statistically significant differences (P &lt; 0.05) between populations
-according to Tukey’s HSD test, the numbers next to the blue line indicate the mean value.
+quartile to the minimum value, the dots represent individual T. molitor specimens, red asterisks
+representing outliers, values that deviate markedly from the interquartile range (1.5 * IQR),
+different letters above the boxes indicate statistically significant differences (P &lt; 0.05) between
+populations according to Tukey’s HSD test, the numbers next to the blue line indicate the mean
+value.
 
 ![Gregarina count example. Figure 2](Gregarine.png)
-Figure 2. Relationship between body weight of T. molitor and formaldehyde concentration: see
-Fig. 1.
+Figure 2. Relationship between body weight of T. molitor and o-xylene concentration: see
+Figure 1.
 
 #### Keywords:
 
